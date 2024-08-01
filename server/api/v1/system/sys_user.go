@@ -83,6 +83,7 @@ func (b *BaseApi) TokenNext(c *gin.Context, user system.SysUser) {
 		NickName:    user.NickName,
 		Username:    user.Username,
 		AuthorityId: user.AuthorityId,
+		ShopUserId:  user.ShopUserId,
 	})
 	token, err := j.CreateToken(claims)
 	if err != nil {
@@ -160,7 +161,8 @@ func (b *BaseApi) Register(c *gin.Context) {
 			AuthorityId: v,
 		})
 	}
-	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, HeaderImg: r.HeaderImg, AuthorityId: r.AuthorityId, Authorities: authorities, Enable: r.Enable, Phone: r.Phone, Email: r.Email}
+	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, HeaderImg: r.HeaderImg, AuthorityId: r.AuthorityId,
+		Authorities: authorities, Enable: r.Enable, Phone: r.Phone, Email: r.Email, ShopUserId: r.ShopUserId}
 	userReturn, err := userService.Register(*user)
 	if err != nil {
 		global.GVA_LOG.Error("注册失败!", zap.Error(err))
@@ -371,12 +373,13 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 		GVA_MODEL: global.GVA_MODEL{
 			ID: user.ID,
 		},
-		NickName:  user.NickName,
-		HeaderImg: user.HeaderImg,
-		Phone:     user.Phone,
-		Email:     user.Email,
-		SideMode:  user.SideMode,
-		Enable:    user.Enable,
+		NickName:   user.NickName,
+		HeaderImg:  user.HeaderImg,
+		Phone:      user.Phone,
+		Email:      user.Email,
+		SideMode:   user.SideMode,
+		Enable:     user.Enable,
+		ShopUserId: user.ShopUserId,
 	})
 	if err != nil {
 		global.GVA_LOG.Error("设置失败!", zap.Error(err))

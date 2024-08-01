@@ -67,9 +67,9 @@ func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
 	var menuId uint
 	if a.AutoCreateApiToSql {
 		if ids, err := autoCodeService.AutoCreateApi(&a); err != nil {
-			global.GVA_LOG.Error("自动化创建API失败!", zap.Error(err))
+			global.GVA_LOG.Error("自动化创建失败!请自行清空垃圾数据!", zap.Error(err))
 			c.Writer.Header().Add("success", "false")
-			c.Writer.Header().Add("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据或取消自动创建API!"))
+			c.Writer.Header().Add("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据!"))
 			return
 		} else {
 			apiIds = ids
@@ -77,10 +77,9 @@ func (autoApi *AutoCodeApi) CreateTemp(c *gin.Context) {
 	}
 	if a.AutoCreateMenuToSql {
 		if id, err := autoCodeService.AutoCreateMenu(&a); err != nil {
-			global.GVA_LOG.Error("自动化创建菜单失败!", zap.Error(err))
+			global.GVA_LOG.Error("自动化创建失败!请自行清空垃圾数据!", zap.Error(err))
 			c.Writer.Header().Add("success", "false")
-			c.Writer.Header().Add("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据或取消自动创建菜单!"))
-			return
+			c.Writer.Header().Add("msg", url.QueryEscape("自动化创建失败!请自行清空垃圾数据!"))
 		} else {
 			menuId = id
 		}
@@ -161,6 +160,23 @@ func (autoApi *AutoCodeApi) GetColumn(c *gin.Context) {
 		global.GVA_LOG.Error("获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
+		for i, column := range columns {
+			if column.ColumnComment != "" {
+				continue
+			}
+			switch column.ColumnName {
+			case "user_id":
+				columns[i].ColumnComment = "商店用户ID"
+			case "date_add":
+				columns[i].ColumnComment = "创建时间"
+			case "date_update":
+				columns[i].ColumnComment = "更新时间"
+			case "date_delete":
+				columns[i].ColumnComment = "删除时间"
+			case "is_deleted":
+				columns[i].ColumnComment = "已删除"
+			}
+		}
 		response.OkWithDetailed(gin.H{"columns": columns}, "获取成功", c)
 	}
 }

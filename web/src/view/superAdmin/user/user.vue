@@ -201,6 +201,12 @@
           />
         </el-form-item>
         <el-form-item
+            label="商店用户id"
+            prop="shopUserId"
+        >
+          <el-input v-model.number="userInfo.shopUserId" />
+        </el-form-item>
+        <el-form-item
           label="启用"
           prop="disabled"
         >
@@ -375,6 +381,7 @@ const userInfo = ref({
   authorityId: '',
   authorityIds: [],
   enable: 1,
+  shopUserId: 0,
 })
 
 const rules = ref({
@@ -394,6 +401,9 @@ const rules = ref({
   ],
   email: [
     { pattern: /^([0-9A-Za-z\-_.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: '请输入正确的邮箱', trigger: 'blur' },
+  ],
+  shopUserId: [
+    { pattern: /^\d+$/g, message: '请输入正确的商店用户id', trigger: 'blur' },
   ],
   authorityId: [
     { required: true, message: '请选择用户角色', trigger: 'blur' }
